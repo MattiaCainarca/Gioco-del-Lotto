@@ -14,6 +14,19 @@ def calcoloCodiceFiscale():
     return codice_fiscale_inserito
 
 
+def getDataNascita(codice):
+    data = (codicefiscale.get_birthday(codice))
+    return data.split('-')
+
+
+def convertiAnno(anno):
+    if int(anno) < 21:
+        anno = int(anno) + 2000
+    else:
+        anno = int(anno) + 1900
+    return anno
+
+
 def calcolaEta(giorno, mese, anno):
     today = datetime.today()
     return today.year - anno - ((today.month, today.day) < (mese, giorno))
@@ -29,11 +42,9 @@ def scriviFile(matrice):
 
 
 codice_fiscale = calcoloCodiceFiscale()
-dataNascita = (codicefiscale.get_birthday(codice_fiscale))
-dataNascitaArray = (dataNascita.split('-'))
-if int(dataNascitaArray[2]) < 21:
-    dataNascitaArray[2] = int(dataNascitaArray[2]) + 2000
-eta = calcolaEta(int(dataNascitaArray[0]), int(dataNascitaArray[1]), int(dataNascitaArray[2]))
+dataNascita = getDataNascita(codice_fiscale)
+dataNascita[2] = convertiAnno(dataNascita[2])
+eta = calcolaEta(int(dataNascita[0]), int(dataNascita[1]), int(dataNascita[2]))
 print(eta)
 mat = np.random.randint(1, 91, (11, 5))  # Matrice delle ruote
 print(mat)

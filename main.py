@@ -8,10 +8,14 @@ nomiRuote = ["Torino", "Milano", "Venezia", "Genova", "Firenze", "Roma", "Napoli
 def calcoloCodiceFiscale():
     codice_fiscale_inserito = -1
     while not codicefiscale.isvalid(codice_fiscale_inserito):
-        print("\n\nInserisci il tuo codice fiscale: ")
-        codice_fiscale_inserito = input()
-        codice_fiscale_inserito = codice_fiscale_inserito.upper()
+        codice_fiscale_inserito = leggiCodiceFiscale()
     return codice_fiscale_inserito
+
+
+def leggiCodiceFiscale():
+    print("\nInserisci il tuo codice fiscale: ")
+    stringa = input()
+    return stringa.upper()
 
 
 def getDataNascita(codice):
@@ -21,10 +25,9 @@ def getDataNascita(codice):
 
 def convertiAnno(anno):
     if int(anno) < 21:
-        anno = int(anno) + 2000
+        return int(anno) + 2000
     else:
-        anno = int(anno) + 1900
-    return anno
+        return int(anno) + 1900
 
 
 def calcolaEta(giorno, mese, anno):
@@ -41,11 +44,31 @@ def scriviFile(matrice):
     file.close()
 
 
+def stampaMenu():
+    for i in range(11):
+        print(i+1, "Ruota", nomiRuote[i])
+
+
+def inserisciNumeri():
+    numeriScelti = []
+    print('Inserisci i 5 numeri da puntare')
+    for i in range(5):
+        elemento = int(input())
+        numeriScelti.insert(i, elemento)
+
+
 codice_fiscale = calcoloCodiceFiscale()
 dataNascita = getDataNascita(codice_fiscale)
 dataNascita[2] = convertiAnno(dataNascita[2])
 eta = calcolaEta(int(dataNascita[0]), int(dataNascita[1]), int(dataNascita[2]))
-print(eta)
-mat = np.random.randint(1, 91, (11, 5))  # Matrice delle ruote
-print(mat)
-scriviFile(mat)
+if eta >= 18:
+    mat = np.random.choice(90, (11, 5), replace=False)
+    print(mat)
+    mat = mat + 1
+    print(mat)
+    scriviFile(mat)
+    stampaMenu()
+    ruotaScelta = 0
+    while (ruotaScelta < 1) or (ruotaScelta > 11):
+        print("Scegliere la ruota su cui puntare")
+        ruotaScelta = int(input())

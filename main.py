@@ -71,4 +71,3 @@ if eta >= 18:
     while (ruotaScelta < 1) or (ruotaScelta > 11):
         print("Scegliere la ruota su cui puntare")
         ruotaScelta = int(input())
-

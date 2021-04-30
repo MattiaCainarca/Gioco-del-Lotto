@@ -44,7 +44,7 @@ def scriviFile(matrice):
     file.close()
 
 
-def stampaMenu():
+def stampaRoute():
     for i in range(11):
         print(i+1, "Ruota", nomiRuote[i])
 
@@ -63,12 +63,12 @@ dataNascita[2] = convertiAnno(dataNascita[2])
 eta = calcolaEta(int(dataNascita[0]), int(dataNascita[1]), int(dataNascita[2]))
 if eta >= 18:
     mat = np.random.choice(90, (11, 5), replace=False)
-    print(mat)
     mat = mat + 1
-    print(mat)
+    print("\n\n", mat)
     scriviFile(mat)
-    stampaMenu()
+    stampaRoute()
     ruotaScelta = 0
     while (ruotaScelta < 1) or (ruotaScelta > 11):
         print("Scegliere la ruota su cui puntare")
         ruotaScelta = int(input())
+

@@ -1,6 +1,7 @@
 import codicefiscale
 from datetime import datetime
 import numpy as np
+from setuptools.launch import run
 
 nomiRuote = ["Torino", "Milano", "Venezia", "Genova", "Firenze", "Roma", "Napoli", "Bari", "Palermo", "Cagliari", "Ruota Nazionale"]
 
@@ -37,8 +38,9 @@ def calcolaEta(giorno, mese, anno):  # Ritorna l'età in base al codice fiscale 
 
 
 def generaNumeriRuote():  # Genera 5 numeri compresi tra 0 e 90 per ogni ruota
-    for i in range(11):
-        mat = np.random.choice(90, (i, 5), replace=False)
+    mat = np.zeros((11, 5))
+    for i in range(len(mat)):
+        mat[i] = np.random.choice(89, 5, replace=False) + 1
     mat = mat + 1
     print("Matrice\n", mat)
     return mat
@@ -57,7 +59,7 @@ def scegliModalita():  # L'utente sceglie la modalità con la quale vuole fare l
     modalita = 0
     while (modalita < 1) or (modalita > 10):
         print("Premi 1 per la modalita 'ESTRATTO'\nPremi 2 per la modalita 'AMBO'\nPremi 3 per la modalita 'TERNO'\nPremi 4 per la modalita 'QUATERNA'\nPremi 5 per la modalita 'CINQUINA'")
-        print("Premi 6 per la modalita 'ESTRATTO SECCO'\nPremi 7 per la modalita 'AMBO'\nPremi 8 per la modalita 'TERNO SECCO'\nPremi 9 per la modalita 'QUATERNA SECCO'\nPremi 10 per la modalita 'CINQUINA SECCO'\n")
+        print("Premi 6 per la modalita 'ESTRATTO SECCO'\nPremi 7 per la modalita 'AMBO SECCO'\nPremi 8 per la modalita 'TERNO SECCO'\nPremi 9 per la modalita 'QUATERNA SECCO'\nPremi 10 per la modalita 'CINQUINA SECCO'\n")
         print("Seleziona la modalità con cui vuoi fare la tua puntata:")
         modalita = int(input())
     return modalita
@@ -94,9 +96,55 @@ def scegliNumeri(numeri_da_giocare):
 def scegliPuntata():
     puntata = -1
     while (puntata < 1) or (puntata > 200):
-        print("Insersci l'importo della puntata, compreso tra 1€ e 200€: ")
+        print("\nInsersci l'importo della puntata, compreso tra 1€ e 200€: ")
         puntata = int(input())
     return puntata
+
+
+def calcoloVincita(trovati, mod_scelta, punt_scelta):
+    vincita = 0
+    if mod_scelta == 1:
+        vincita = 5*trovati
+    elif mod_scelta == 2:
+        vincita = 25*trovati
+    elif mod_scelta == 3:
+        vincita = 450*trovati
+    elif mod_scelta == 4:
+        vincita = 12000*trovati
+    elif mod_scelta == 5:
+        vincita = 600000*trovati
+    elif (mod_scelta == 6) and (trovati >= mod_scelta-5):
+        vincita = 55
+    elif (mod_scelta == 7) and (trovati >= mod_scelta-5):
+        vincita = 250
+    elif (mod_scelta == 8) and (trovati >= mod_scelta-5):
+        vincita = 4500
+    elif (mod_scelta == 9) and (trovati >= mod_scelta-5):
+        vincita = 120000
+    elif (mod_scelta == 10) and (trovati >= mod_scelta-5):
+        vincita == 6000000
+    return vincita*punt_scelta
+
+
+def controlloVincite(num_estratti, mod_scelta, num_scelti, r_scelta, punt_scelta):
+    trovati = 0
+    if mod_scelta < 6:
+        for i in range(10):
+            trovati_interni = 0
+            for j in range(len(num_scelti)):
+                if num_scelti[j] in num_estratti[i]:
+                    trovati_interni += 1
+            if trovati_interni >= mod_scelta:
+                trovati += 1
+    else:
+        for i in range(len(num_scelti)):
+            if num_scelti[i] in num_estratti[r_scelta-1]:
+                trovati += 1
+    print("\nBravo hai indovinato", trovati, "numeri")
+    if trovati > 0:
+        return calcoloVincita(trovati, mod_scelta, punt_scelta)
+    else:
+        return 0
 
 
 codice_fiscale = calcoloCodiceFiscale()
@@ -107,7 +155,10 @@ if eta >= 18:
     numeri_estratti = generaNumeriRuote()
     scriviFile(numeri_estratti)
     modalita_scelta = scegliModalita()
+    ruota_scelta = 0
     if modalita_scelta > 5:
         ruota_scelta = scegliRuota()
     numeri_scelti = scegliNumeri(modalita_scelta)
     puntata_scelta = scegliPuntata()
+    vincita_utente = controlloVincite(numeri_estratti, modalita_scelta, numeri_scelti, ruota_scelta, puntata_scelta)
+    print("Hai vinto:", vincita_utente)

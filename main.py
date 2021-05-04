@@ -77,16 +77,26 @@ def scegliRuota():  # L'utente sceglie la ruota du cui vuole fare la sua puntata
     return ruota
 
 
-def inserisciNumeri():
+def scegliNumeri(numeri_da_giocare):
     numeriScelti = []
-    print('\nInserisci i 5 numeri da puntare:')
-    for i in range(5):
+    if numeri_da_giocare > 5:
+        numeri_da_giocare -= 5
+    print("\nInserisci i", numeri_da_giocare, "numeri da puntare: ")
+    for i in range(numeri_da_giocare):
         numero = -1
         while (numero < 1) or (numero > 90):
             print("\tInserisci un numero compreso tra 1 e 90: ")
             numero = int(input())
         numeriScelti.insert(i, numero)
     return numeriScelti
+
+
+def scegliPuntata():
+    puntata = -1
+    while (puntata < 1) or (puntata > 200):
+        print("Insersci l'importo della puntata, compreso tra 1€ e 200€: ")
+        puntata = int(input())
+    return puntata
 
 
 codice_fiscale = calcoloCodiceFiscale()
@@ -97,7 +107,7 @@ if eta >= 18:
     numeri_estratti = generaNumeriRuote()
     scriviFile(numeri_estratti)
     modalita_scelta = scegliModalita()
-    numeri_inseriti = inserisciNumeri()
-    print(numeri_inseriti)
-    if modalita_scelta <= 5:
+    if modalita_scelta > 5:
         ruota_scelta = scegliRuota()
+    numeri_scelti = scegliNumeri(modalita_scelta)
+    puntata_scelta = scegliPuntata()

@@ -5,7 +5,7 @@ import numpy as np
 nomiRuote = ["Torino", "Milano", "Venezia", "Genova", "Firenze", "Roma", "Napoli", "Bari", "Palermo", "Cagliari", "Ruota Nazionale"]
 
 
-def calcoloCodiceFiscale():  # Controlla che che il codice fiscale inserito sia corrtetto:
+def calcoloCodiceFiscale():  # Controlla che che il codice fiscale inserito sia corretto:
     test_codice_fiscale = -1
     while not codicefiscale.isvalid(test_codice_fiscale):
         test_codice_fiscale = leggiCodiceFiscale()
@@ -53,6 +53,16 @@ def scriviFile(matrice):  # Viene salvata la matrice su un file con la data del 
     file.close()
 
 
+def scegliModalita():
+    modalita = 0
+    while (modalita < 1) or (modalita > 10):
+        print("Premi 1 per la modalita 'ESTRATTO'\nPremi 2 per la modalita 'AMBO'\nPremi 3 per la modalita 'TERNO'\nPremi 4 per la modalita 'QUATERNA'\nPremi 5 per la modalita 'CINQUINA'")
+        print("Premi 6 per la modalita 'ESTRATTO SECCO'\nPremi 7 per la modalita 'AMBO'\nPremi 8 per la modalita 'TERNO SECCO'\nPremi 9 per la modalita 'QUATERNA SECCO'\nPremi 10 per la modalita 'CINQUINA SECCO'\n")
+        print("Seleziona la modalità con cui vuoi fare la tua puntata:")
+        modalita = int(input())
+    return modalita
+
+
 def stampaRoute():  # Stampa i nomi delle ruote:
     for i in range(11):
         print(i+1, "Ruota", nomiRuote[i])
@@ -82,4 +92,5 @@ eta = calcolaEta(int(dataNascita[0]), int(dataNascita[1]), int(dataNascita[2]))
 if eta >= 18:
     numeri_estratti = generaNumeriRuote()
     scriviFile(numeri_estratti)
+    modalita_scelta = scegliModalita()
     ruota_scelta = scegliRuota()

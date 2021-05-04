@@ -53,7 +53,7 @@ def scriviFile(matrice):  # Viene salvata la matrice su un file con la data del 
     file.close()
 
 
-def scegliModalita():
+def scegliModalita():  # L'utente sceglie la modalità con la quale vuole fare la sua puntata:
     modalita = 0
     while (modalita < 1) or (modalita > 10):
         print("Premi 1 per la modalita 'ESTRATTO'\nPremi 2 per la modalita 'AMBO'\nPremi 3 per la modalita 'TERNO'\nPremi 4 per la modalita 'QUATERNA'\nPremi 5 per la modalita 'CINQUINA'")
@@ -68,9 +68,9 @@ def stampaRoute():  # Stampa i nomi delle ruote:
         print(i+1, "Ruota", nomiRuote[i])
 
 
-def scegliRuota():
+def scegliRuota():  # L'utente sceglie la ruota du cui vuole fare la sua puntata:
     stampaRoute()
-    ruota = 0
+    ruota = -1
     while (ruota < 1) or (ruota > 11):
         print("Scegliere la ruota su cui puntare")
         ruota = int(input())
@@ -79,10 +79,14 @@ def scegliRuota():
 
 def inserisciNumeri():
     numeriScelti = []
-    print('Inserisci i 5 numeri da puntare')
+    print('\nInserisci i 5 numeri da puntare:')
     for i in range(5):
-        elemento = int(input())
-        numeriScelti.insert(i, elemento)
+        numero = -1
+        while (numero < 1) or (numero > 90):
+            print("\tInserisci un numero compreso tra 1 e 90: ")
+            numero = int(input())
+        numeriScelti.insert(i, numero)
+    return numeriScelti
 
 
 codice_fiscale = calcoloCodiceFiscale()
@@ -93,4 +97,7 @@ if eta >= 18:
     numeri_estratti = generaNumeriRuote()
     scriviFile(numeri_estratti)
     modalita_scelta = scegliModalita()
-    ruota_scelta = scegliRuota()
+    numeri_inseriti = inserisciNumeri()
+    print(numeri_inseriti)
+    if modalita_scelta <= 5:
+        ruota_scelta = scegliRuota()

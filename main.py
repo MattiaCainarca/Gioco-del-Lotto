@@ -28,14 +28,15 @@ def getDataNascita(codice):  # Restituisce la data di nascita:
 
 
 def convertiAnno(anno):  # Converte l'anno del codice fiscale in un anno con 4 cifre:
-    year = datetime.now().strftime("%y")  # Assegna alla varibiale "year" solo le ultime due cifre dell'anno corrente (2021 --> 21).
+    year = datetime.now().strftime(
+        "%y")  # Assegna alla varibiale "year" solo le ultime due cifre dell'anno corrente (2021 --> 21).
     if int(anno) < int(year):
         return int(anno) + 2000
     else:
         return int(anno) + 1900
 
 
-def calcolaEta(giorno, mese, anno):  # Ritorna l'età in base al codice fiscale inserito:
+def calcolaEtà(giorno, mese, anno):  # Ritorna l'età in base al codice fiscale inserito:
     today = datetime.today()
     return today.year - anno - ((today.month, today.day) < (mese, giorno))
 
@@ -47,10 +48,15 @@ def generaNumeriRuote():  # Genera 5 numeri compresi tra 0 e 90 diversi per ogni
     return mat
 
 
-def scriviFile():  # Viene salvata la matrice su un file con la data del giorno corrente:
+def fileGiornoOdierno():
     now = datetime.now()
-    filename = now.strftime("NumeriVincenti_%m-%d-%Y")
-    filename = f'{filename}.txt'
+    nome_file = now.strftime("NumeriVincenti_%m-%d-%Y")
+    nome_file = f'{nome_file}.txt'
+    return nome_file
+
+
+def salvaEstrazione():  # Viene salvata la matrice su un file con la data del giorno corrente:
+    filename = fileGiornoOdierno()
     if not os.path.exists(filename):
         num_estratti = generaNumeriRuote()
         file = open(filename, 'w')
@@ -59,9 +65,7 @@ def scriviFile():  # Viene salvata la matrice su un file con la data del giorno 
 
 
 def leggiFile():  # Legge i numeri estratti dal file dei numeri vincenti del giorno corrente:
-    now = datetime.now()
-    filename = now.strftime("NumeriVincenti_%m-%d-%Y")
-    filename = f'{filename}.txt'
+    filename = fileGiornoOdierno()
     file = open(filename, 'r')
     matrice = np.loadtxt(file, dtype=int, delimiter=';', usecols=(0, 1, 2, 3, 4))
     return matrice
@@ -93,7 +97,8 @@ def scegliRuota():  # L'utente sceglie la ruota du cui vuole fare la sua puntata
     return ruota
 
 
-def scegliNumeri(numeri_da_giocare):  # Chiede all'utente di inserire i numeri per effetturare la giocata in base alla modalità scelta:
+def scegliNumeri(
+        numeri_da_giocare):  # Chiede all'utente di inserire i numeri per effetturare la giocata in base alla modalità scelta:
     numeriScelti = []
     if numeri_da_giocare > 5:
         numeri_da_giocare -= 5
@@ -116,7 +121,7 @@ def scegliPuntata():  # Chiede all'utente di inserire l'importo con il quale vuo
 
 
 def calcoloVincita(trovati, mod_scelta, punt_scelta):  # Viene calcolata la vincita in base all'importo giocato:
-    return vincite[mod_scelta-1] * trovati * punt_scelta
+    return vincite[mod_scelta - 1] * trovati * punt_scelta
 
 
 def controlloVinciteEstrazioni(num_utente, modalita, num_vincenti):
@@ -142,7 +147,8 @@ def controlloVinciteEstrazioniSecche(num_utente, ruota, modalita, num_vincenti):
         return 0
 
 
-def controlloVincite(num_estratti, mod_scelta, num_scelti, r_scelta, punt_scelta):  # Vengono confrontati i numeri inseriti dall'utente con quelli dell'estrazione:
+def controlloVincite(num_estratti, mod_scelta, num_scelti, r_scelta,
+                     punt_scelta):  # Vengono confrontati i numeri inseriti dall'utente con quelli dell'estrazione:
     if mod_scelta < 6:
         indovinati = controlloVinciteEstrazioni(num_scelti, mod_scelta, num_estratti)
     else:
@@ -155,25 +161,23 @@ def controlloVincite(num_estratti, mod_scelta, num_scelti, r_scelta, punt_scelta
 
 def stampaVincita(vincita):
     if vincita > 0:
-        print("\nHai vinto: %d!" % vincita)
+        print("\nHai vinto: %d€!" % vincita)
     else:
         print("\nMi spiace non hai vinto.\nRitenta con dei nuovi numeri!")
 
 
 def giocoDelLotto():
-    if eta >= 18:
-        scriviFile()
-        modalita_scelta = scegliModalita()
-        ruota_scelta = 0
-        if modalita_scelta > 5:
-            ruota_scelta = scegliRuota()
-        numeri_scelti = scegliNumeri(modalita_scelta)
-        puntata_scelta = scegliPuntata()
-        numeri_estratti = leggiFile()
-        vincita_utente = controlloVincite(numeri_estratti, modalita_scelta, numeri_scelti, ruota_scelta, puntata_scelta)
-        stampaVincita(vincita_utente)
-    else:
-        print("Mi dispiace non hai un'età sufficiente per giocare.")
+    salvaEstrazione()
+    modalita_scelta = scegliModalita()
+    ruota_scelta = 0
+    if modalita_scelta > 5:
+        ruota_scelta = scegliRuota()
+    numeri_scelti = scegliNumeri(modalita_scelta)
+    puntata_scelta = scegliPuntata()
+    numeri_estratti = leggiFile()
+    vincita_utente = controlloVincite(numeri_estratti, modalita_scelta, numeri_scelti, ruota_scelta, puntata_scelta)
+    stampaVincita(vincita_utente)
+    return vincita_utente
 
 
 def vuoiRigiocare():
@@ -184,11 +188,31 @@ def vuoiRigiocare():
     return ritenta
 
 
+def verificaEtà(anni):
+    if anni >= 18:
+        return 1
+    else:
+        print("Mi dispiace non hai un'età sufficiente per giocare.")
+        return 0
+
+
+def autenticaGiocatore(cod_fisc):
+    dataNascita = getDataNascita(cod_fisc)
+    dataNascita[2] = convertiAnno(dataNascita[2])
+    età = calcolaEtà(int(dataNascita[0]), int(dataNascita[1]), int(dataNascita[2]))
+    return verificaEtà(età)
+
+
+def aggiornaFileGiocatori(cod_fisc, ammontare):
+    file_utenti = open("giocatori.txt", "a")
+    file_utenti.write(f"{cod_fisc}, {ammontare}\n")
+    file_utenti.close()
+
+
 continua = -1
 codice_fiscale = calcoloCodiceFiscale()
-dataNascita = getDataNascita(codice_fiscale)
-dataNascita[2] = convertiAnno(dataNascita[2])
-eta = calcolaEta(int(dataNascita[0]), int(dataNascita[1]), int(dataNascita[2]))
-while continua:
-    giocoDelLotto()
-    continua = vuoiRigiocare()
+if autenticaGiocatore(codice_fiscale):
+    while continua:
+        vincita_attuale = giocoDelLotto()
+        aggiornaFileGiocatori(codice_fiscale, vincita_attuale)
+        continua = vuoiRigiocare()

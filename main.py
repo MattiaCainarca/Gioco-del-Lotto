@@ -161,9 +161,25 @@ def controlloVincite(num_estratti, mod_scelta, num_scelti, r_scelta, punt_scelta
 
 def stampaVincita(vincita):
     if vincita > 0:
-        print("\nHai vinto: %d!" % vincita_utente)
+        print("\nHai vinto: %d!" % vincita)
     else:
         print("\nMi spiace non hai vinto.\nRitenta con dei nuovi numeri!")
+
+
+def giocoDelLotto():
+    if eta >= 18:
+        scriviFile()
+        modalita_scelta = scegliModalita()
+        ruota_scelta = 0
+        if modalita_scelta > 5:
+            ruota_scelta = scegliRuota()
+        numeri_scelti = scegliNumeri(modalita_scelta)
+        puntata_scelta = scegliPuntata()
+        numeri_estratti = leggiFile()
+        vincita_utente = controlloVincite(numeri_estratti, modalita_scelta, numeri_scelti, ruota_scelta, puntata_scelta)
+        stampaVincita(vincita_utente)
+    else:
+        print("Mi dispiace non hai un'età sufficiente per giocare.")
 
 
 def vuoiRigiocare():
@@ -180,18 +196,5 @@ while continua:
     dataNascita = getDataNascita(codice_fiscale)
     dataNascita[2] = convertiAnno(dataNascita[2])
     eta = calcolaEta(int(dataNascita[0]), int(dataNascita[1]), int(dataNascita[2]))
-
-    if eta >= 18:
-        scriviFile()
-        modalita_scelta = scegliModalita()
-        ruota_scelta = 0
-        if modalita_scelta > 5:
-            ruota_scelta = scegliRuota()
-        numeri_scelti = scegliNumeri(modalita_scelta)
-        puntata_scelta = scegliPuntata()
-        numeri_estratti = leggiFile()
-        vincita_utente = controlloVincite(numeri_estratti, modalita_scelta, numeri_scelti, ruota_scelta, puntata_scelta)
-        stampaVincita(vincita_utente)
-    else:
-        print("Mi dispiace non hai un'età sufficiente per giocare.")
+    giocoDelLotto()
     continua = vuoiRigiocare()

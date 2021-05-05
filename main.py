@@ -6,6 +6,8 @@ import os.path
 nomiRuote = ["Torino", "Milano", "Venezia", "Genova", "Firenze", "Roma", "Napoli", "Bari", "Palermo", "Cagliari",
              "Ruota Nazionale"]
 
+vincite = [5, 25, 450, 12000, 600000, 55, 250, 4500, 120000, 6000000]
+
 
 def calcoloCodiceFiscale():  # Controlla che che il codice fiscale inserito sia corretto:
     test_codice_fiscale = -1
@@ -26,7 +28,8 @@ def getDataNascita(codice):  # Restituisce la data di nascita:
 
 
 def convertiAnno(anno):  # Converte l'anno del codice fiscale in un anno con 4 cifre:
-    year = datetime.now().strftime("%y")  # Assegna alla varibiale "year" solo le ultime due cifre dell'anno corrente (2021 --> 21).
+    year = datetime.now().strftime(
+        "%y")  # Assegna alla varibiale "year" solo le ultime due cifre dell'anno corrente (2021 --> 21).
     if int(anno) < int(year):
         return int(anno) + 2000
     else:
@@ -92,7 +95,8 @@ def scegliRuota():  # L'utente sceglie la ruota du cui vuole fare la sua puntata
     return ruota
 
 
-def scegliNumeri(numeri_da_giocare):  # Chiede all'utente di inserire i numeri per effetturare la giocata in base alla modalità scelta:
+def scegliNumeri(
+        numeri_da_giocare):  # Chiede all'utente di inserire i numeri per effetturare la giocata in base alla modalità scelta:
     numeriScelti = []
     if numeri_da_giocare > 5:
         numeri_da_giocare -= 5
@@ -115,28 +119,7 @@ def scegliPuntata():  # Chiede all'utente di inserire l'importo con il quale vuo
 
 
 def calcoloVincita(trovati, mod_scelta, punt_scelta):  # Viene calcolata la vincita in base all'importo giocato:
-    vincita = 0
-    if mod_scelta == 1:
-        vincita = 5 * trovati
-    elif mod_scelta == 2:
-        vincita = 25 * trovati
-    elif mod_scelta == 3:
-        vincita = 450 * trovati
-    elif mod_scelta == 4:
-        vincita = 12000 * trovati
-    elif mod_scelta == 5:
-        vincita = 600000 * trovati
-    elif (mod_scelta == 6) and (trovati >= mod_scelta - 5):
-        vincita = 55
-    elif (mod_scelta == 7) and (trovati >= mod_scelta - 5):
-        vincita = 250
-    elif (mod_scelta == 8) and (trovati >= mod_scelta - 5):
-        vincita = 4500
-    elif (mod_scelta == 9) and (trovati >= mod_scelta - 5):
-        vincita = 120000
-    elif (mod_scelta == 10) and (trovati >= mod_scelta - 5):
-        vincita = 6000000
-    return vincita * punt_scelta
+    return vincite[mod_scelta-1] * punt_scelta
 
 
 def controlloVincite(num_estratti, mod_scelta, num_scelti, r_scelta, punt_scelta):  # Vengono confrontati i numeri inseriti dall'utente con quelli dell'estrazione:

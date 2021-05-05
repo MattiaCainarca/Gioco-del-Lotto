@@ -28,8 +28,7 @@ def getDataNascita(codice):  # Restituisce la data di nascita:
 
 
 def convertiAnno(anno):  # Converte l'anno del codice fiscale in un anno con 4 cifre:
-    year = datetime.now().strftime(
-        "%y")  # Assegna alla varibiale "year" solo le ultime due cifre dell'anno corrente (2021 --> 21).
+    year = datetime.now().strftime("%y")  # Assegna alla varibiale "year" solo le ultime due cifre dell'anno corrente (2021 --> 21).
     if int(anno) < int(year):
         return int(anno) + 2000
     else:
@@ -45,7 +44,6 @@ def generaNumeriRuote():  # Genera 5 numeri compresi tra 0 e 90 diversi per ogni
     mat = np.zeros((11, 5))
     for i in range(len(mat)):
         mat[i] = np.random.choice(89, 5, replace=False) + 1
-    mat = mat + 1
     return mat
 
 
@@ -95,8 +93,7 @@ def scegliRuota():  # L'utente sceglie la ruota du cui vuole fare la sua puntata
     return ruota
 
 
-def scegliNumeri(
-        numeri_da_giocare):  # Chiede all'utente di inserire i numeri per effetturare la giocata in base alla modalità scelta:
+def scegliNumeri(numeri_da_giocare):  # Chiede all'utente di inserire i numeri per effetturare la giocata in base alla modalità scelta:
     numeriScelti = []
     if numeri_da_giocare > 5:
         numeri_da_giocare -= 5
@@ -119,25 +116,39 @@ def scegliPuntata():  # Chiede all'utente di inserire l'importo con il quale vuo
 
 
 def calcoloVincita(trovati, mod_scelta, punt_scelta):  # Viene calcolata la vincita in base all'importo giocato:
-    return vincite[mod_scelta-1] * punt_scelta
+    return vincite[mod_scelta-1] * trovati * punt_scelta
+
+
+def controlloVinciteEstrazioni(num_utente, modalita, num_vincenti):
+    trovati = 0
+    for i in range(10):
+        trovati_interni = 0
+        for j in range(len(num_utente)):
+            if num_utente[j] in num_vincenti[i]:
+                trovati_interni += 1
+        if trovati_interni >= modalita:
+            trovati += 1
+    return trovati
+
+
+def controlloVinciteEstrazioniSecche(num_utente, ruota, modalita, num_vincenti):
+    trovati = 0
+    for i in range(len(num_utente)):
+        if num_utente[i] in num_vincenti[ruota - 1]:
+            trovati += 1
+    if trovati >= modalita - 5:
+        return 1
+    else:
+        return 0
 
 
 def controlloVincite(num_estratti, mod_scelta, num_scelti, r_scelta, punt_scelta):  # Vengono confrontati i numeri inseriti dall'utente con quelli dell'estrazione:
-    trovati = 0
     if mod_scelta < 6:
-        for i in range(10):
-            trovati_interni = 0
-            for j in range(len(num_scelti)):
-                if num_scelti[j] in num_estratti[i]:
-                    trovati_interni += 1
-            if trovati_interni >= mod_scelta:
-                trovati += 1
+        indovinati = controlloVinciteEstrazioni(num_scelti, mod_scelta, num_estratti)
     else:
-        for i in range(len(num_scelti)):
-            if num_scelti[i] in num_estratti[r_scelta - 1]:
-                trovati += 1
-    if trovati > 0:
-        return calcoloVincita(trovati, mod_scelta, punt_scelta)
+        indovinati = controlloVinciteEstrazioniSecche(num_scelti, r_scelta, mod_scelta, num_estratti)
+    if indovinati > 0:
+        return calcoloVincita(indovinati, mod_scelta, punt_scelta)
     else:
         return 0
 

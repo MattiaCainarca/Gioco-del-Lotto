@@ -185,10 +185,10 @@ def vuoiRigiocare():
 
 
 continua = -1
+codice_fiscale = calcoloCodiceFiscale()
+dataNascita = getDataNascita(codice_fiscale)
+dataNascita[2] = convertiAnno(dataNascita[2])
+eta = calcolaEta(int(dataNascita[0]), int(dataNascita[1]), int(dataNascita[2]))
 while continua:
-    codice_fiscale = calcoloCodiceFiscale()
-    dataNascita = getDataNascita(codice_fiscale)
-    dataNascita[2] = convertiAnno(dataNascita[2])
-    eta = calcolaEta(int(dataNascita[0]), int(dataNascita[1]), int(dataNascita[2]))
     giocoDelLotto()
     continua = vuoiRigiocare()

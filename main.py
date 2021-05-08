@@ -55,7 +55,7 @@ def calcolaEta(giorno, mese, anno):  # Ritorna l'età in base al codice fiscale 
     return today.year - anno - ((today.month, today.day) < (mese, giorno))
 
 
-def giocoDelLotto():
+def giocoDelLotto(cod_fisc):
     salvaEstrazione()
     modalita_scelta = scegliModalita()
     ruota_scelta = 0
@@ -66,7 +66,7 @@ def giocoDelLotto():
     numeri_estratti = leggiFile()
     vincita_utente = controlloVincite(numeri_estratti, modalita_scelta, numeri_scelti, ruota_scelta, puntata_scelta)
     stampaVincita(vincita_utente)
-    return vincita_utente
+    aggiornaFileGiocatori(cod_fisc, numeri_scelti, vincita_utente)
 
 
 def salvaEstrazione():  # Viene salvata la matrice su un file con la data del giorno corrente:
@@ -139,7 +139,7 @@ def leggiFile():  # Legge i numeri estratti dal file dei numeri vincenti del gio
 
 def fileGiornoOdierno():
     now = datetime.now()
-    nome_file = now.strftime("NumeriVincenti_%m-%d-%Y")
+    nome_file = now.strftime("NumeriVincenti_%d-%m-%Y")
     nome_file = f'{nome_file}.txt'
     return nome_file
 
@@ -192,10 +192,17 @@ def stampaVincita(vincita):  # Nel caso ci fosse, viene stampata il valore della
         print("\nMi spiace non hai vinto.\nRitenta con dei nuovi numeri!")
 
 
-def aggiornaFileGiocatori(cod_fisc,
+def aggiornaFileGiocatori(cod_fisc, num_utente,
                           ammontare):  # Viene aggiunto al file dei giocatori, il codice fiscale dell'utente con la rispettiva vincita:
-    file_utenti = open("giocatori.txt", "a")
-    file_utenti.write(f"{cod_fisc}, {ammontare}\n")
+    now = datetime.now()
+    data = now.strftime("%d-%m-%Y")
+    filename = f"{data}_{cod_fisc}.txt"
+    # filename = data + "_" + cod_fisc + ".txt"
+    if os.path.exists(filename):
+        file_utenti = open(filename, "a")
+    else:
+        file_utenti = open(filename, "w")
+    file_utenti.write(f"{cod_fisc}, {num_utente}, {ammontare}\n")
     file_utenti.close()
 
 
@@ -211,6 +218,5 @@ continua = -1
 codice_fiscale = calcoloCodiceFiscale()
 if verificaEta(codice_fiscale):
     while continua:
-        vincita_attuale = giocoDelLotto()
-        aggiornaFileGiocatori(codice_fiscale, vincita_attuale)
+        giocoDelLotto(codice_fiscale)
         continua = vuoiRigiocare()

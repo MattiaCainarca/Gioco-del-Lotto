@@ -97,7 +97,7 @@ def scegliRuota():  # L'utente sceglie la ruota du cui vuole fare la sua puntata
 
 def stampaRoute():  # Stampa i nomi delle ruote:
     for i in range(11):
-        print(i + 1, "Ruota", nomiRuote[i])
+        print(i + 1, ": Ruota", nomiRuote[i])
 
 
 def scegliNumeri(
@@ -149,7 +149,7 @@ def controlloVincite(num_estratti, mod_scelta, num_scelti, r_scelta,
     if mod_scelta < 6:
         indovinati = controlloVinciteEstrazioni(num_scelti, mod_scelta, num_estratti)
     else:
-        indovinati = controlloVinciteEstrazioniSecche(num_scelti, r_scelta, mod_scelta, num_estratti)
+        indovinati = controlloVinciteEstrazioniSecche(num_scelti, r_scelta, num_estratti)
     if indovinati > 0:
         return calcoloVincita(indovinati, mod_scelta, punt_scelta)
     else:
@@ -169,16 +169,11 @@ def controlloVinciteEstrazioni(num_utente, modalita,
     return trovati
 
 
-def controlloVinciteEstrazioniSecche(num_utente, ruota, modalita,
-                                     num_vincenti):  # Controlla se i numeri dell'utenti sono presenti in quelli estratti, sulla ruota scelta dall'utente:
-    trovati = 0
+def controlloVinciteEstrazioniSecche(num_utente, ruota, num_vincenti):  # Controlla se i numeri dell'utenti sono presenti in quelli estratti, sulla ruota scelta dall'utente:
     for i in range(len(num_utente)):
-        if num_utente[i] in num_vincenti[ruota - 1]:
-            trovati += 1
-    if trovati >= modalita - 5:
-        return 1
-    else:
-        return 0
+        if not num_utente[i] in num_vincenti[ruota - 1]:
+            return 0
+    return 1
 
 
 def calcoloVincita(trovati, mod_scelta, punt_scelta):  # Viene calcolata la vincita in base all'importo giocato:

@@ -102,17 +102,24 @@ def stampaRoute():  # Stampa i nomi delle ruote:
 
 def scegliNumeri(
         numeri_da_giocare):  # Chiede all'utente di inserire i numeri per effetturare la giocata in base alla modalità scelta:
-    numeriScelti = []
+    numeri_inseriti = []
     if numeri_da_giocare > 5:
         numeri_da_giocare -= 5
     print("\nInserisci i", numeri_da_giocare, "numeri da puntare: ")
     for i in range(numeri_da_giocare):
         numero = -1
-        while (numero < 1) or (numero > 90):
+        while (numero < 1) or (numero > 90) or not(controlloNumero(numero, numeri_inseriti)):
             print("\tInserisci un numero compreso tra 1 e 90: ")
             numero = int(input())
-        numeriScelti.insert(i, numero)
-    return numeriScelti
+        numeri_inseriti.insert(i, numero)
+    return numeri_inseriti
+
+
+def controlloNumero(num, numeri):
+    if num in numeri:
+        print("\tNumero già scelto, selezionare un altro numero!")
+        return 0
+    return 1
 
 
 def generaNumeriRuote():  # Genera 5 numeri compresi tra 0 e 90 diversi per ogni riga, per ogni ruota:

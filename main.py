@@ -199,7 +199,6 @@ def aggiornaFileGiocatori(cod_fisc, num_utente,
     now = datetime.now()
     data = now.strftime("%d-%m-%Y")
     filename = f"{data}_{cod_fisc}.txt"
-    # filename = data + "_" + cod_fisc + ".txt"
     if os.path.exists(filename):
         file_utenti = open(filename, "a")
     else:
